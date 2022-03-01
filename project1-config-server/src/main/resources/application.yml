@@ -6,12 +6,13 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/KingEdward27/nttdata.bootcamp.project1
+          uri: https://github.com/repoes/nttdata.bootcamp.project1
           searchPaths: config-data
-          username: ${GIT_USER}
-          password: ${GIT_PASSWORD}
-          default-label: "master"
+          username: repoes
+          password: Proyecto1234
+          default-label: "main"
   security:
     user:
       name: root
       password: s3cr3t 
+
