@@ -21,4 +21,9 @@ public class EurekaTest {
 	public Mono<String> greet(){
 		return clientServiceBalance.getMessage();
 	}
+	
+	@GetMapping("/message21")
+	public Mono<String> greets(){
+		return clientServiceBalance.getMessage();
+	}
 }
