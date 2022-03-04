@@ -1,0 +1,25 @@
+[{
+  "_id": 1,
+  "accountClient": {
+    "_id": 1
+  },
+  "amount": "1001",
+  "movementtype": "DEPOSITO",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountPayment"
+},{
+  "_id": 2,
+  "accountClient": {
+    "_id": 1
+  },
+  "amount": "1000",
+  "movementtype": "DEPOSITO",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountPayment"
+},{
+  "_id": 3,
+  "accountClient": {
+    "_id": 1
+  },
+  "amount": "1",
+  "movementtype": "RETIRO",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountPayment"
+}]

@@ -1,0 +1,18 @@
+server:
+  port: 8081
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/repoes/nttdata.bootcamp.project1
+          searchPaths: config-data
+          username: repoes
+          password: Proyecto1234
+          default-label: "main"
+  security:
+    user:
+      name: root
+      password: s3cr3t 
+

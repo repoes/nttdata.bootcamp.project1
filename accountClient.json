@@ -1,0 +1,61 @@
+[{
+  "_id": 1,
+  "client": {
+    "_id": 1,
+    "clienttype": {
+      "_id": 1,
+      "name": "Personal"
+    },
+    "name": "Edward Rojas"
+  },
+  "product": {
+    "_id": 1,
+    "name": "PASIVO_CUENTA_AHORROS",
+    "producttype": "PASIVO",
+    "productsubtype": "AHORROS",
+    "comission": 0,
+    "movementsmax": 0
+  },
+  "amount": "2000",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountClient"
+},{
+  "_id": 2,
+  "client": {
+    "_id": 2,
+    "clienttype": {
+      "_id": 2,
+      "name": "Empresarial"
+    },
+    "name": "Sherwin Marquez"
+  },
+  "product": {
+    "_id": 1,
+    "name": "PASIVO_CUENTA_AHORROS",
+    "producttype": "PASIVO",
+    "productsubtype": "AHORROS",
+    "comission": 0,
+    "movementsmax": 0
+  },
+  "amount": "1100",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountClient"
+},{
+  "_id": 3,
+  "client": {
+    "_id": 3,
+    "clienttype": {
+      "_id": 1,
+      "name": "Personal"
+    },
+    "name": "Diana Rojas"
+  },
+  "product": {
+    "_id": 4,
+    "name": "ACTIVO_CREDITO_PERSONAL",
+    "producttype": "CREDITO",
+    "productsubtype": "PERSONAL",
+    "comission": 0,
+    "movementsmax": 0
+  },
+  "amount": "2000",
+  "_class": "com.nttdata.bootcamp.project1.model.AccountClient"
+}]

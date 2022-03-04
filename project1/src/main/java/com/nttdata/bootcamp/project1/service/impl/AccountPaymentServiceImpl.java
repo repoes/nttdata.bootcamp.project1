@@ -42,11 +42,11 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 			else{
 				throw new RuntimeException("Solo se permiten los valores DEPOSITO/RETIRO");
 			}
-			iAccountPaymentRepository.save(e);
+			iAccountPaymentRepository.save(e).subscribe();
 			return data;
 		})
 		.switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
-		.flatMap(data -> iAccountClientRepository.save(data));
+		.flatMap(data2 -> iAccountClientRepository.save(data2));
 		
 //		return mono;
 	}

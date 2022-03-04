@@ -16,4 +16,5 @@ public class AccountClient {
 	private Client client;
 	private Product product;
 	private BigDecimal amount;
+	private BigDecimal amountlimit;
 }
