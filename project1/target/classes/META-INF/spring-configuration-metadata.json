@@ -1,0 +1,27 @@
+{
+  "groups": [
+    {
+      "name": "project1",
+      "type": "com.nttdata.bootcamp.project1.config.AppConfig",
+      "sourceType": "com.nttdata.bootcamp.project1.config.AppConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "project1.database",
+      "type": "java.lang.String",
+      "sourceType": "com.nttdata.bootcamp.project1.config.AppConfig"
+    },
+    {
+      "name": "project1.host",
+      "type": "java.lang.String",
+      "sourceType": "com.nttdata.bootcamp.project1.config.AppConfig"
+    },
+    {
+      "name": "project1.port",
+      "type": "java.lang.String",
+      "sourceType": "com.nttdata.bootcamp.project1.config.AppConfig"
+    }
+  ],
+  "hints": []
+}
