@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,5 +51,11 @@ public class AccountPaymentController {
 		});
 		list.subscribe(prod -> log.info(prod.toString()));
 		return list;
+	}
+	
+	@GetMapping("/list/{id}")
+	public Flux<String> listPaymentByIdAccClient(@PathVariable int id) {
+		log.info(appConfig.toString());
+		return accountPaymentService.findAccountPaymentByAccClientId(id);
 	}
 }
