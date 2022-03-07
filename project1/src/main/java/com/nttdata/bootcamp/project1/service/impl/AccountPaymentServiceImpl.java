@@ -50,6 +50,16 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 		
 //		return mono;
 	}
+	public Flux<String> findAccountPaymentByAccClientId(int id){
+		//encontrar los AccountPayment por id del AccountClient
+		return iAccountPaymentRepository.findAll()
+			.filter( payment -> payment.getAccountClient().getId() == id)
+			.map( pay -> {
+				return ""+pay.getAmount()+" - "+pay.getMovementtype()+"\n";
+			})
+			.defaultIfEmpty("No hay AccountPayment vacios")
+		;
+	}
 
 	@Override
 	public Mono<AccountPayment> findById(Integer id) {

@@ -57,4 +57,10 @@ public class AccountClientController {
 		list.subscribe(prod -> log.info(prod.toString()));
 		return list;
 	}
+
+	@GetMapping("/list/{id}")
+	public Flux<String> listPaymentByIdAccClient(@PathVariable int id) {
+		log.info(appConfig.toString());
+		return accountPaymentService.findAccountPaymentByAccClientId(id);
+	}
 }

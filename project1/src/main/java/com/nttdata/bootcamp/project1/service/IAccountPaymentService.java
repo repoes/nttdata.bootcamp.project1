@@ -11,4 +11,5 @@ public interface IAccountPaymentService {
     Flux<AccountPayment> findAll(); 
     Mono<AccountPayment> update(AccountPayment e);
     Mono<Void> delete(Integer id);
+    public Flux<String> findAccountPaymentByAccClientId(int id);
 }
