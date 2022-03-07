@@ -1,0 +1,7 @@
+eureka-serverproject/target/*
+project1/target/*
+project1-config-server/target/*
+eureka-serverproject/.settings/*
+project1/.settings/*
+project1-config-server/.settings/*
+project1-config-server/target/**
