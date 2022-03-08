@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.nttdata.bootcamp.project1.config.AppConfig;
 import com.nttdata.bootcamp.project1.model.AccountClient;
 import com.nttdata.bootcamp.project1.model.AccountPayment;
 import com.nttdata.bootcamp.project1.repository.IAccountClientRepository;
