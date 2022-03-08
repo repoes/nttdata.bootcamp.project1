@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ import org.springframework.ui.Model;
 @RequestMapping("/accountClient")
 public class AccountClientController {
 	
-	private static final Logger log = LoggerFactory.getLogger(AccountClientController.class);
+	private static final Logger LOG = LoggerFactory.getLogger(AccountClientController.class);
 	
 	@Autowired
 	IAccountClientService accountClientService;
@@ -50,11 +51,16 @@ public class AccountClientController {
     }
 	@GetMapping("/list")
 	public Flux<AccountClient> list() {
-		log.info(appConfig.toString());
-		Flux<AccountClient> list = accountClientService.findAll().map(clienttype -> {
-			return clienttype;
-		});
-		list.subscribe(prod -> log.info(prod.toString()));
+		LOG.info(appConfig.toString());
+		Flux<AccountClient> list = accountClientService.findAll();
+		list.subscribe(prod -> LOG.info(prod.toString()));
+		return list;
+	}
+	@GetMapping("/getAmount")
+	public Flux<String> getAmountByClient(@RequestParam("clientId") int clientId) {
+		LOG.info(appConfig.toString());
+		Flux<String> list = accountClientService.findByClient(clientId);
+		list.subscribe(prod -> LOG.info(prod.toString()));
 		return list;
 	}
 

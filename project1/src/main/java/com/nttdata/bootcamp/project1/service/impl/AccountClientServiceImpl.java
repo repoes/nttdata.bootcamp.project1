@@ -40,7 +40,18 @@ public class AccountClientServiceImpl implements IAccountClientService {
 		
 		
 		Flux<AccountClient> flux = findByClientId(e.getClient().getId())
-		
+		.map(data ->{
+			if(e.getClient() == null) {
+				throw new RuntimeException("Debe indicar el cliente");
+			}
+			if(e.getProduct() == null) {
+				throw new RuntimeException("Debe indicar el producto");
+			}
+			if(e.getBaseamount() == null) {
+				throw new RuntimeException("Debe indicar el monto base");
+			}
+			return data;
+		})
 		.filter(data -> {
 			if(data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_PERSONAL_ID) {
 				if(data.getProduct().getId() == e.getProduct().getId() 
@@ -87,7 +98,16 @@ public class AccountClientServiceImpl implements IAccountClientService {
 	public Flux<AccountClient> findAll() {
 		return iAccountClientRepository.findAll();
 	}
-
+	@Override
+	public Flux<String> findByClient(int clientId) {
+		return iAccountClientRepository.findAll()
+				.filter(data -> data.getClient().getId() == clientId)
+				.map(clienttype -> {
+			return clienttype.getProduct().getName() + 
+					"(monto base "+ clienttype.getBaseamount() + "): "+
+							clienttype.getAmount() + "\n";
+		});
+	}
 	@Override
 	public Mono<AccountClient> update(AccountClient e) {
 		

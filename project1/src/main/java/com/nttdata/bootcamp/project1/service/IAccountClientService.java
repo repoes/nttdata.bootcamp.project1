@@ -11,6 +11,7 @@ public interface IAccountClientService {
 	public Mono<AccountClient> save(AccountClient e) ;
 	Mono<AccountClient> findById(Integer id);
     Flux<AccountClient> findAll();
+    public Flux<String> findByClient(int clientId);
     Mono<AccountClient> update(AccountClient e);
     Mono<Void> delete(Integer id);
     public Flux<AccountClient> findByClientId(int id);
