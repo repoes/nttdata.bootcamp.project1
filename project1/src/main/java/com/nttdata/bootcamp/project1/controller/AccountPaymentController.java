@@ -58,4 +58,16 @@ public class AccountPaymentController {
 		log.info(appConfig.toString());
 		return accountPaymentService.findAccountPaymentByAccClientId(id);
 	}
+
+	@GetMapping("/list/lento/{id}")
+	public Flux<String> listPaymentByIdAccClient2(@PathVariable int id) {
+		long sleep=3000;
+		try {
+			Thread.sleep(sleep);
+		}catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+		log.info(appConfig.toString());
+		return accountPaymentService.findAccountPaymentByAccClientId(id);
+	}
 }

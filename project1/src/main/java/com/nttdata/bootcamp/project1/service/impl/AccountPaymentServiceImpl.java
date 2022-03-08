@@ -24,6 +24,9 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 	@Autowired
 	IAccountClientRepository iAccountClientRepository;
 	
+	@Autowired
+	private AppConfig appConfig;
+
 	@Override
 	public Mono<?> save(AccountPayment e) {
 		//buscar cuenta por accountclient.name
@@ -55,7 +58,7 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 		return iAccountPaymentRepository.findAll()
 			.filter( payment -> payment.getAccountClient().getId() == id)
 			.map( pay -> {
-				return ""+pay.getAmount()+" - "+pay.getMovementtype()+"\n";
+				return ""+pay.getAmount()+" - "+pay.getMovementtype()+" - "+appConfig.getPort()+"\n";
 			})
 			.defaultIfEmpty("No hay AccountPayment vacios")
 		;
