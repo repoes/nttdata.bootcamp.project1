@@ -5,3 +5,6 @@ eureka-serverproject/.settings/*
 project1/.settings/*
 project1-config-server/.settings/*
 project1-config-server/target/**
+gateway-serverproject/target/**
+gateway-serverproject/.settings/**
+project1/.factorypath
