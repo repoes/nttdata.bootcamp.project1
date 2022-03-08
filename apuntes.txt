@@ -1,0 +1,4 @@
+ejecutar checkstyle:
+====================
+1. descomentar plugin en pom.xml
+2. ejecutar comando mvn checkstyle:checkstyle
