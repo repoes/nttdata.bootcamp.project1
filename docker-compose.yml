@@ -1,68 +1,67 @@
 version: '2.2'
 services:
   eureka-service:
-    build: EurekaServer
-    image: bootcamp/discovery-service
+    build: eureka-serverproject
+    image: bootcamp/eureka-service
     restart: always
     ports:
       - 8761:8761
 
   config-server:
-    build: ConfigServer
+    build: project1-config-server
     image: bootcamp/config-server
     restart: always
-    depends_on:
-      discovery-service:
-        condition: service_healthy
     ports:
       - 8888:8888
 
   gateway-service:
-    build: GatewayService
-    image: bootcamp/project1
+    build: gateway-serverproject
+    image: bootcamp/gateway-service
     restart: always
     depends_on:
-      config-server:
-        condition: service_healthy
+      eureka-service:
+        condition: service_started
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://eureka-service:8761/eureka/
     ports:
       - 8090:8090
 
   project1-service:
-    build: Project1Service
-    image: bootcamp/project1
+    build: project1
+    image: bootcamp/project1-service
     restart: always
     depends_on:
       config-server:
-        condition: service_healthy
+        condition: service_started
+      eureka-service:
+        condition: service_started
+      mongodb:
+        condition: service_started
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://eureka-service:8761/eureka/
+      spring.data.mongodb.host: mongodb
     ports:
       - 8081:8081
-
+  mongodb:
+    restart: always
+    image: mongo:4.0-xenial
+    hostname: mongo
+    ports:
+      - "27017:27017"
   sonarqube:
     image: sonarqube:community
     depends_on:
-      - db
+      db:
+        condition: service_started
     environment:
       SONAR_JDBC_URL: jdbc:postgresql://db:5432/sonar
       SONAR_JDBC_USERNAME: sonar
       SONAR_JDBC_PASSWORD: sonar
-    volumes:
-      - sonarqube_data:/opt/sonarqube/data
-      - sonarqube_extensions:/opt/sonarqube/extensions
-      - sonarqube_logs:/opt/sonarqube/logs
     ports:
       - "9000:9000"
   db:
+    restart: always
     image: postgres:12
     environment:
       POSTGRES_USER: sonar
       POSTGRES_PASSWORD: sonar
-    volumes:
-      - postgresql:/var/lib/postgresql
-      - postgresql_data:/var/lib/postgresql/data
-      
-  volumes:
-    sonarqube_data:
-    sonarqube_extensions:
-    sonarqube_logs:
-    postgresql:
-    postgresql_data:
