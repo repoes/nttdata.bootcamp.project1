@@ -23,116 +23,120 @@ import reactor.core.publisher.Mono;
 @Service
 public class AccountClientServiceImpl implements IAccountClientService {
 
-	private static final Logger log = LoggerFactory.getLogger(AccountClientServiceImpl.class);
-	
-	@Autowired
-	IAccountClientRepository iAccountClientRepository;
+    private static final Logger log = LoggerFactory.getLogger(AccountClientServiceImpl.class);
 
-	@Autowired
-	IClientRepository iClientRepository;
-	
-	
-	@Autowired
-	IProductRepository iProductRepository;
-	
-	@Override
-	public Mono<AccountClient> save(AccountClient e) throws RuntimeException {
-		
-		
-		Flux<AccountClient> flux = findByClientId(e.getClient().getId())
-		.map(data ->{
-			if(e.getClient() == null) {
-				throw new RuntimeException("Debe indicar el cliente");
-			}
-			if(e.getProduct() == null) {
-				throw new RuntimeException("Debe indicar el producto");
-			}
-			if(e.getBaseamount() == null) {
-				throw new RuntimeException("Debe indicar el monto base");
-			}
-			return data;
-		})
-		.filter(data -> {
-			if(data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_PERSONAL_ID) {
-				if(data.getProduct().getId() == e.getProduct().getId() 
-						&& (data.getProduct().getId() == Constants.CUENTA_AHORROS_ID
-							|| data.getProduct().getId() == Constants.CUENTA_CORRIENTE_ID
-							|| data.getProduct().getId() == Constants.CUENTA_PLAZO_FIJO_ID)) {
-					throw new RuntimeException("El cliente de tipo PERSONAL no puede tener mas de una cuenta de ahorro, "
-							+ "corriente o de plazo fijo");
-				}
-			}
-			return false;
-		}).filter(data -> {
-			if(data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_EMPRESARIAL_ID) {
-				if(data.getProduct().getId() == e.getProduct().getId() 
-						&& (data.getProduct().getId() == Constants.CUENTA_AHORROS_ID
-						|| data.getProduct().getId() == Constants.CUENTA_PLAZO_FIJO_ID)) {
-					throw new RuntimeException("El cliente de tipo EMPRESARIAL no puede tener mas de una cuenta de ahorro o de plazo fijo");
-				}
-			}
-			return false;
-		}).switchIfEmpty(postSave(e));
-		return Mono.from(flux);
-	}
-	private Mono<AccountClient> postSave(AccountClient e){
-		return iClientRepository.findById(e.getClient().getId())
-			.flatMap(data ->{
-				log.info(data.toString());
-				e.setClient(data);
-				return iProductRepository.findById(e.getProduct().getId())
-				;
-			})
-			.flatMap(data2 ->{
-				log.info(data2.toString());
-				e.setProduct(data2);
-				return iAccountClientRepository.save(e);
-			});
-	}
-	@Override
-	public Mono<AccountClient> findById(Integer id) {
-		return iAccountClientRepository.findById(id);
-	}
+    @Autowired
+    IAccountClientRepository iAccountClientRepository;
 
-	@Override
-	public Flux<AccountClient> findAll() {
-		return iAccountClientRepository.findAll();
-	}
-	@Override
-	public Flux<String> findByClient(int clientId) {
-		return iAccountClientRepository.findAll()
-				.filter(data -> data.getClient().getId() == clientId)
-				.map(clienttype -> {
-			return clienttype.getProduct().getName() + 
-					"(monto base "+ clienttype.getBaseamount() + "): "+
-							clienttype.getAmount() + "\n";
-		});
-	}
-	@Override
-	public Mono<AccountClient> update(AccountClient e) {
-		
-		Flux<AccountClient> finded = iAccountClientRepository.findByClientId(e.getId()).map(data->{
-			return data;
-		});
-		finded.map(null);
-		return finded.collectList().map(data -> {
-			if(data.size() >= 0) {
-				iAccountClientRepository.save(null);
-				return new AccountClient();
-			}else {
-				return new AccountClient();
-			}
-		});
-	}
+    @Autowired
+    IClientRepository iClientRepository;
 
-	@Override
-	public Mono<Void> delete(Integer id) {
-		return iAccountClientRepository.deleteById(id);
-	}
+    @Autowired
+    IProductRepository iProductRepository;
 
-	@Override
-	public Flux<AccountClient> findByClientId(int id) {
-		return iAccountClientRepository.findByClientId(id);
-	}
+    @Override
+    public Mono<AccountClient> save(AccountClient e) throws RuntimeException {
+
+        Flux<AccountClient> flux = findByClientId(e.getClient().getId())
+                .map(data -> {
+                    if (e.getClient() == null) {
+                        throw new RuntimeException("Debe indicar el cliente");
+                    }
+                    if (e.getProduct() == null) {
+                        throw new RuntimeException("Debe indicar el producto");
+                    }
+                    if (e.getBaseamount() == null) {
+                        throw new RuntimeException("Debe indicar el monto base");
+                    }
+                    if (e.getAmount() == null) {
+                        throw new RuntimeException("Debe indicar el monto");
+                    }
+                    return data;
+                })
+                .filter(data -> {
+                    if (data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_PERSONAL_ID) {
+                        if (data.getProduct().getId() == e.getProduct().getId()
+                                && (data.getProduct().getId() == Constants.CUENTA_AHORROS_ID
+                                || data.getProduct().getId() == Constants.CUENTA_CORRIENTE_ID
+                                || data.getProduct().getId() == Constants.CUENTA_PLAZO_FIJO_ID)) {
+                            throw new RuntimeException("El cliente de tipo PERSONAL no puede tener mas de una cuenta de ahorro, "
+                                    + "corriente o de plazo fijo");
+                        }
+                    }
+                    return false;
+                }).filter(data -> {
+            if (data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_EMPRESARIAL_ID) {
+                if (data.getProduct().getId() == e.getProduct().getId()
+                        && (data.getProduct().getId() == Constants.CUENTA_AHORROS_ID
+                        || data.getProduct().getId() == Constants.CUENTA_PLAZO_FIJO_ID)) {
+                    throw new RuntimeException("El cliente de tipo EMPRESARIAL no puede tener mas de una cuenta de ahorro o de plazo fijo");
+                }
+            }
+            return false;
+        }).switchIfEmpty(postSave(e));
+        return Mono.from(flux);
+    }
+
+    private Mono<AccountClient> postSave(AccountClient e) {
+        return iClientRepository.findById(e.getClient().getId())
+                .flatMap(data -> {
+                    log.info(data.toString());
+                    e.setClient(data);
+                    return iProductRepository.findById(e.getProduct().getId());
+                })
+                .flatMap(data2 -> {
+                    log.info(data2.toString());
+                    e.setProduct(data2);
+                    return iAccountClientRepository.save(e);
+                });
+    }
+
+    @Override
+    public Mono<AccountClient> findById(Integer id) {
+        return iAccountClientRepository.findById(id);
+    }
+
+    @Override
+    public Flux<AccountClient> findAll() {
+        return iAccountClientRepository.findAll();
+    }
+
+    @Override
+    public Flux<String> findByClient(int clientId) {
+        return iAccountClientRepository.findAll()
+                .filter(data -> data.getClient().getId() == clientId)
+                .map(clienttype -> {
+                    return clienttype.getProduct().getName()
+                            + "(monto base " + clienttype.getBaseamount() + "): "
+                            + clienttype.getAmount() + "\n";
+                });
+    }
+
+    @Override
+    public Mono<AccountClient> update(AccountClient e) {
+
+        Flux<AccountClient> finded = iAccountClientRepository.findByClientId(e.getId()).map(data -> {
+            return data;
+        });
+        finded.map(null);
+        return finded.collectList().map(data -> {
+            if (data.size() >= 0) {
+                iAccountClientRepository.save(null);
+                return new AccountClient();
+            } else {
+                return new AccountClient();
+            }
+        });
+    }
+
+    @Override
+    public Mono<Void> delete(Integer id) {
+        return iAccountClientRepository.deleteById(id);
+    }
+
+    @Override
+    public Flux<AccountClient> findByClientId(int id) {
+        return iAccountClientRepository.findByClientId(id);
+    }
 
 }

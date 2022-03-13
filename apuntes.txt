@@ -2,3 +2,11 @@ ejecutar checkstyle:
 ====================
 1. descomentar plugin en pom.xml
 2. ejecutar comando mvn checkstyle:checkstyle
+
+docker:
+=======
+docker-compose pull
+docker-compose build gateway-service config-server eureka-service project1-service
+docker-compose up -d
+
+https://bank-app-project1.scm.azurewebsites.net/api/logstream

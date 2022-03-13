@@ -12,12 +12,12 @@ import lombok.Data;
 @Configuration
 @ConfigurationProperties(prefix = "project1")
 public class AppConfig {
-	@Value("${spring.data.mongodb.host}")
-	private String host;
-	
-	@Value("${spring.data.mongodb.port}")
-	private String port;
-	
-	@Value("${spring.data.mongodb.database}")
-	private String database;
+//	@Value("${spring.data.mongodb.host}")
+//	private String host;
+//	
+//	@Value("${spring.data.mongodb.port}")
+//	private String port;
+//	
+//	@Value("${spring.data.mongodb.database}")
+//	private String database;
 }

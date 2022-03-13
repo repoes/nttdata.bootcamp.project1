@@ -10,4 +10,7 @@ public class Constants {
 	
 	public static final int CLIENTE_TIPO_PERSONAL_ID = 1;
 	public static final int CLIENTE_TIPO_EMPRESARIAL_ID = 2;
+	
+	public static final String MOVEMENTYPE_DEPOSITO = "DEPOSITO";
+	public static final String MOVEMENTYPE_RETIRO = "RETIRO";
 }

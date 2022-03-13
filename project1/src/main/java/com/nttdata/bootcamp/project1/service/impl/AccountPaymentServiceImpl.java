@@ -11,7 +11,7 @@ import com.nttdata.bootcamp.project1.model.AccountPayment;
 import com.nttdata.bootcamp.project1.repository.IAccountClientRepository;
 import com.nttdata.bootcamp.project1.repository.IAccountPaymentRepository;
 import com.nttdata.bootcamp.project1.service.IAccountPaymentService;
-
+import com.nttdata.bootcamp.project1.util.Constants;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,19 +25,19 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 	@Autowired
 	IAccountClientRepository iAccountClientRepository;
 	
-	@Autowired
-	private AppConfig appConfig;
+//	@Autowired
+//	private AppConfig appConfig; 
 
 	@Override
 	public Mono<?> save(AccountPayment e) {
-		//buscar cuenta por accountclient.name
+		//buscar cuenta por accountclient.id
 		//si no encuentra error
 		//actualizar monto accountcliente
 		//guardar pago
 		return iAccountClientRepository.findById(e.getAccountClient().getId()).map( data->{
-			if(e.getMovementtype().equals("DEPOSITO")) {
+			if(e.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
 				data.setAmount(data.getAmount().add(e.getAmount()));
-			}else if(e.getMovementtype().equals("RETIRO")){
+			}else if(e.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)){
 				if(data.getAmount().compareTo(e.getAmount()) == -1) {
 					throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
 				}
@@ -59,7 +59,7 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService{
 		return iAccountPaymentRepository.findAll()
 			.filter( payment -> payment.getAccountClient().getId() == id)
 			.map( pay -> {
-				return ""+pay.getAmount()+" - "+pay.getMovementtype()+" - "+appConfig.getPort()+"\n";
+				return ""+pay.getAmount()+" - "+pay.getMovementtype()+" - "+"80"+"\n";
 			})
 			.defaultIfEmpty("No hay AccountPayment vacios")
 		;
