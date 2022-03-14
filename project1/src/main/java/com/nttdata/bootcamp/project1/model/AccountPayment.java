@@ -1,6 +1,8 @@
 package com.nttdata.bootcamp.project1.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,4 +17,6 @@ public class AccountPayment {
 	private AccountClient accountClient;
 	private BigDecimal amount;
 	private String movementtype;
+        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+	private LocalDateTime date;
 }

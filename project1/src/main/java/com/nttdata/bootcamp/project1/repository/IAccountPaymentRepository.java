@@ -9,11 +9,12 @@ import com.nttdata.bootcamp.project1.model.AccountClient;
 import com.nttdata.bootcamp.project1.model.AccountPayment;
 import com.nttdata.bootcamp.project1.model.Clienttype;
 import com.nttdata.bootcamp.project1.model.Product;
+import java.time.LocalDate;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
 public interface IAccountPaymentRepository extends ReactiveMongoRepository<AccountPayment, Integer>{
-	
+	public Flux<AccountPayment> findByAccountClientAndDateBetween(AccountClient accountClient,LocalDate dateIni,LocalDate dateFin);
 }

@@ -1,5 +1,6 @@
 package com.nttdata.bootcamp.project1.model;
 
+import java.math.BigDecimal;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +14,6 @@ public class Product {
 	private String name;
 	private String producttype;
 	private String productsubtype;
-	private int comission;
+	private BigDecimal comission;
 	private int movementsmax;
 }
