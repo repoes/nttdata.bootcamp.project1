@@ -13,4 +13,7 @@ public class Constants {
 	
 	public static final String MOVEMENTYPE_DEPOSITO = "DEPOSITO";
 	public static final String MOVEMENTYPE_RETIRO = "RETIRO";
+	
+	public static final String PRODUCTO_CREDITO = "CREDITO";
+    	public static final String PRODUCTO_PASIVO = "PASIVO";
 }
