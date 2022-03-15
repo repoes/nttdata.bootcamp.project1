@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
-public interface IAccountPaymentRepository extends ReactiveMongoRepository<AccountPayment, Integer>{
-	public Flux<AccountPayment> findByAccountClientAndDateBetween(AccountClient accountClient,LocalDate dateIni,LocalDate dateFin);
+public interface IAccountPaymentRepository extends ReactiveMongoRepository<AccountPayment, String>{
+	public Flux<AccountPayment> findByAccountClientIdAndDateBetween(int accountClientId,LocalDate dateIni,LocalDate dateFin);
+        public Flux<AccountPayment> findByAccountClientId(int accountClientId);
 }

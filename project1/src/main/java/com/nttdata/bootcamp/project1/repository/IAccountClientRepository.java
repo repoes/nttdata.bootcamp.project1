@@ -11,8 +11,11 @@ import com.nttdata.bootcamp.project1.model.Clienttype;
 import com.nttdata.bootcamp.project1.model.Product;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Repository
 public interface IAccountClientRepository extends ReactiveMongoRepository<AccountClient, Integer>{
 	Flux<AccountClient> findByClientId(int clientId);
+        Flux<AccountClient> findByProductId(int productId);
+        Mono<AccountClient> findByCardNumberAndToCardPrincipal(String cardNumber,boolean toCardPrincipal);
 }
