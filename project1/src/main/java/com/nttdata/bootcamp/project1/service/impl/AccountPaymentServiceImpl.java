@@ -5,18 +5,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nttdata.bootcamp.project1.config.AppConfig;
 import com.nttdata.bootcamp.project1.dto.AccountPaymentDTO;
-import com.nttdata.bootcamp.project1.model.AccountClient;
 import com.nttdata.bootcamp.project1.model.AccountPayment;
 import com.nttdata.bootcamp.project1.repository.IAccountClientRepository;
 import com.nttdata.bootcamp.project1.repository.IAccountPaymentRepository;
-import com.nttdata.bootcamp.project1.repository.IProductRepository;
+import com.nttdata.bootcamp.project1.repository.ICardAccountRepository;
 import com.nttdata.bootcamp.project1.service.IAccountPaymentService;
 import com.nttdata.bootcamp.project1.util.Constants;
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,9 +27,9 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
     @Autowired
     IAccountClientRepository iAccountClientRepository;
 
-//    @Autowired
-//    SequenceGeneratorService sequenceGeneratorService;
-    
+    @Autowired
+    ICardAccountRepository iCardAccountRepository;
+
 //	@Autowired
 //	private AppConfig appConfig; 
     @Override
@@ -59,34 +55,34 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
             iAccountClientRepository.save(data).subscribe();
             return data;
         })
-        .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
-        .flatMap(data2 -> iAccountPaymentRepository.save(e));
+                .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
+                .flatMap(data2 -> iAccountPaymentRepository.save(e));
     }
 
     @Override
     public Mono<?> savePaymentByCardNumber(AccountPaymentDTO accountPaymentDTO) {
-        return iAccountClientRepository.findByCardNumberAndToCardPrincipal(accountPaymentDTO.getCardNumber(), true)
-                .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta o no tiene una cuenta principal")))
+        return iCardAccountRepository.findByCardNumberAndAccountPrincipal(accountPaymentDTO.getCardNumber(), true)
+                .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta o no es una cuenta principal")))
                 .map(data -> {
                     if (accountPaymentDTO.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
-                        data.setAmount(data.getAmount().add(accountPaymentDTO.getAmount()));
+                        data.getAccountClient().setAmount(data.getAccountClient().getAmount().add(accountPaymentDTO.getAmount()));
                     } else if (accountPaymentDTO.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)) {
-                        if (data.getAmount().compareTo(accountPaymentDTO.getAmount()) == -1) {
+                        if (data.getAccountClient().getAmount().compareTo(accountPaymentDTO.getAmount()) == -1) {
                             throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
                         }
-                        data.setAmount(data.getAmount().subtract(accountPaymentDTO.getAmount()));
+                        data.getAccountClient().setAmount(data.getAccountClient().getAmount().subtract(accountPaymentDTO.getAmount()));
                     } else {
                         throw new RuntimeException("Solo se permiten los valores DEPOSITO/RETIRO");
                     }
                     AccountPayment acc = new AccountPayment();
-                    acc.setAccountClient(data);
+                    acc.setAccountClient(data.getAccountClient());
                     acc.setAmount(accountPaymentDTO.getAmount());
                     acc.setMovementtype(accountPaymentDTO.getMovementtype());
                     acc.setDate(accountPaymentDTO.getDate());
                     iAccountPaymentRepository.save(acc).subscribe();
                     return data;
                 })
-                .flatMap(data2 -> iAccountClientRepository.save(data2));
+                .flatMap(data2 -> iAccountClientRepository.save(data2.getAccountClient()));
     }
 
     public Flux<String> findAccountPaymentByAccClientId(int id) {
@@ -137,12 +133,13 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
                     return Flux.just(ex.getMessage());
                 }).defaultIfEmpty("No se encontraron registros");
     }
+
     @Override
     public Flux<String> findAccountPaymentByCardNumber(String cardNumber) {
-        return iAccountClientRepository.findByCardNumberAndToCardPrincipal(cardNumber,true)
+        return iCardAccountRepository.findByCardNumberAndAccountPrincipal(cardNumber, true)
                 .flatMapMany(data -> {
                     LOG.info(data.toString());
-                    return iAccountPaymentRepository.findByAccountClientId(data.getClient().getId())
+                    return iAccountPaymentRepository.findByAccountClientId(data.getAccountClient().getClient().getId())
                             .sort((obj1, obj2) -> obj2.getDate().compareTo(obj1.getDate())).take(10);
                 })
                 .map(data2 -> {

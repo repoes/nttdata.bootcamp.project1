@@ -4,12 +4,15 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Data;
+import org.springframework.data.mongodb.core.index.Indexed;
 
 @Data
 @Document
-public class TargetAccount {
+public class CardAccount {
 	@Id
 	int id;
-	String targetNumber;
+	String cardNumber;
+        @Indexed(unique=true)
 	AccountClient accountClient;
+        boolean accountPrincipal;
 }

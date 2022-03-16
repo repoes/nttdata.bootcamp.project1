@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nttdata.bootcamp.project1.model.Product;
-import com.nttdata.bootcamp.project1.model.TargetAccount;
-import com.nttdata.bootcamp.project1.service.ITargetAccountService;
+import com.nttdata.bootcamp.project1.model.CardAccount;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import com.nttdata.bootcamp.project1.service.ICardAccountService;
 
 @RestController
 @RequestMapping("/target")
 public class TargetAccountController {
 	
 	@Autowired
-	private ITargetAccountService targetService;
+	private ICardAccountService targetService;
 	
 	@PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<?> save (@RequestBody TargetAccount targetAccount) throws RuntimeException{
+    public Mono<?> save (@RequestBody CardAccount targetAccount) throws RuntimeException{
 		return targetService.save(targetAccount)
 				.map(result -> "Cuenta Asociada!")
 				.onErrorResume(ex-> Mono.just(ex.getMessage()));
@@ -33,7 +33,7 @@ public class TargetAccountController {
 	
 	@GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-	public Flux<TargetAccount> list() {
+	public Flux<CardAccount> list() {
 		return targetService.list().map(targetAccount -> {
 			return targetAccount;
 		});

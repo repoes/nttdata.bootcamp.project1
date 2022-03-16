@@ -44,7 +44,7 @@ class Project1ApplicationTests {
     @Test
     public void saveAccountPayment() {
         AccountPayment mono = new AccountPayment(null, 
-                new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX);
+                new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX);
         Mockito.when(iAccountPaymentService.save(mono)).thenReturn(Mono.just(mono));
         webTestClient.post().uri("/accountPayment/save")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,9 +59,9 @@ class Project1ApplicationTests {
     public void getAllAccountPayment() {
         Flux<AccountPayment> flux = Flux.just(
                 new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX), 
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX), 
                 new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX));
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX));
         when(iAccountPaymentService.findAll()).thenReturn(flux);
         Flux<AccountPayment> responseBody = webTestClient.get().uri("/accountPayment/list")
                 .exchange()
@@ -71,9 +71,9 @@ class Project1ApplicationTests {
         StepVerifier.create(responseBody)
                 .expectSubscription()
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .verifyComplete();
     }
     @Test
@@ -91,9 +91,9 @@ class Project1ApplicationTests {
         StepVerifier.create(responseBody)
                 .expectSubscription()
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .verifyComplete();
     }
     @Test
@@ -109,9 +109,9 @@ class Project1ApplicationTests {
         StepVerifier.create(responseBody)
                 .expectSubscription()
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null,false), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
+                    new AccountClient(1,null,null,null,null), BigDecimal.TEN, "DEPOSITO", LocalDateTime.MAX))
                 .verifyComplete();
     }
 }

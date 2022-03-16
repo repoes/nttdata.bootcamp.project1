@@ -17,5 +17,5 @@ import reactor.core.publisher.Mono;
 public interface IAccountClientRepository extends ReactiveMongoRepository<AccountClient, Integer>{
 	Flux<AccountClient> findByClientId(int clientId);
         Flux<AccountClient> findByProductId(int productId);
-        Mono<AccountClient> findByCardNumberAndToCardPrincipal(String cardNumber,boolean toCardPrincipal);
+//        Mono<AccountClient> findByCardNumberAndToCardPrincipal(String cardNumber,boolean toCardPrincipal);
 }

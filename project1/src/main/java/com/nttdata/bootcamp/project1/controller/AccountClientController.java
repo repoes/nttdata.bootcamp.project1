@@ -20,48 +20,48 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 
 @RestController
 @RequestMapping("/accountClient")
 public class AccountClientController {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(AccountClientController.class);
-	
-	@Autowired
-	IAccountClientService accountClientService;
-	
-	
-	@Autowired
-	private AppConfig appConfig;
-	
-	@PostMapping("/save")
+
+    private static final Logger LOG = LoggerFactory.getLogger(AccountClientController.class);
+
+    @Autowired
+    IAccountClientService accountClientService;
+
+    @Autowired
+    private AppConfig appConfig;
+
+    @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<String> save (@RequestBody AccountClient account) throws RuntimeException{
-		return accountClientService.save(account)
-				.map(result -> "Cuenta del cliente: " + result.getClient().getName() + " creada!")
-				.onErrorResume(ex-> Mono.just(ex.getMessage()));
+    public Mono<String> save(@RequestBody AccountClient account) throws RuntimeException {
+        return accountClientService.save(account)
+                .map(result -> "Cuenta del cliente: " + result.getClient().getName() + " creada!")
+                .onErrorResume(ex -> Mono.just(ex.getMessage()));
     }
-	@PutMapping("/update")
-    public Mono<String> update (@RequestBody AccountClient account){
-		return accountClientService.update(account)
-				.map(result -> "Cuenta del cliente: " + result.getClient().getName() + " actualizada!")
-				.onErrorResume(ex-> Mono.just(ex.getMessage()));
+
+    @PutMapping("/update")
+    public Mono<String> update(@RequestBody AccountClient account) {
+        return accountClientService.update(account)
+                .map(result -> "Cuenta del cliente: " + result.getClient().getName() + " actualizada!")
+                .onErrorResume(ex -> Mono.just(ex.getMessage()));
     }
-	@GetMapping("/list")
-	public Flux<AccountClient> list() {
-		LOG.info(appConfig.toString());
-		Flux<AccountClient> list = accountClientService.findAll();
-		list.subscribe(prod -> LOG.info(prod.toString()));
-		return list;
-	}
-	@GetMapping("/getAmount")
-	public Flux<String> getAmountByClient(@RequestParam("clientId") int clientId) {
-		LOG.info(appConfig.toString());
-		Flux<String> list = accountClientService.findByClient(clientId);
-		list.subscribe(prod -> LOG.info(prod.toString()));
-		return list;
-	}
+
+    @GetMapping("/list")
+    public Flux<AccountClient> list() {
+        LOG.info(appConfig.toString());
+        Flux<AccountClient> list = accountClientService.findAll();
+        list.subscribe(prod -> LOG.info(prod.toString()));
+        return list;
+    }
+
+    @GetMapping("/getAmount")
+    public Flux<String> getAmountByClient(@RequestParam("clientId") int clientId) {
+        LOG.info(appConfig.toString());
+        Flux<String> list = accountClientService.findByClient(clientId);
+        list.subscribe(prod -> LOG.info(prod.toString()));
+        return list;
+    }
 
 }
