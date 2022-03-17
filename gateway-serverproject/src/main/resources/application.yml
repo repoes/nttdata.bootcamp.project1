@@ -7,11 +7,11 @@ spring:
     gateway:
       routes:    
       - id: project1 - v1
-        uri: lb://project1
+        uri: lb://bankapp
         predicates:
-         - Path=/project1/**
+         - Path=/bankapp/**
         filters:
-        - CircuitBreaker=project1
+        - CircuitBreaker=bankapp
         
 eureka:
   client:
