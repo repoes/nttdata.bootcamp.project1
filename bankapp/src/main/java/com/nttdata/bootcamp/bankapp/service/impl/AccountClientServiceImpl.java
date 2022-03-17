@@ -1,5 +1,7 @@
 package com.nttdata.bootcamp.bankapp.service.impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +55,31 @@ public class AccountClientServiceImpl implements IAccountClientService {
                     }
                     return data;
                 })
+                .map( data -> {
+        			//tienes un flujo del clienta a con sus cuentas
+        			//te llega un cliente con una nueva cuenta
+        			//filtrar sus productos de credito y verificar si la fecha ya vencio
+        			// si vencio error
+        			// sino dejar fluir
+                	System.out.println("const "+Constants.PRODUCTO_CREDITO);
+                	System.out.println("data "+data.getProduct().getProducttype());
+                	System.out.println("logica 1 :"+data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO ));
+                	System.out.println("logica 2:"+data.getProduct().getProducttype() == Constants.PRODUCTO_CREDITO);
+        			if( data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO) ) {
+        				System.out.println("entre al producto de creidto");
+        				//String formate = "2015-02-01";
+        				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        		        LocalDate dateActual = LocalDate.now();
+        		        LocalDate dateExp = LocalDate.parse(data.getDateExp(), formatter);
+        		        System.out.println("fecha actual"+dateActual);
+        		        System.out.println("fecha expiracion"+dateExp);
+        		        System.out.println("comparacion fechas"+dateActual.isAfter(dateExp));
+        			    if(dateActual.isAfter(dateExp)) {
+        			    	throw new RuntimeException("Tiene una cuenta de credito vencida");
+        			    }
+        			}
+        			return data;
+        		})
                 .filter(data -> {
                     if (data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_PERSONAL_ID) {
                         if (data.getProduct().getId() == e.getProduct().getId()

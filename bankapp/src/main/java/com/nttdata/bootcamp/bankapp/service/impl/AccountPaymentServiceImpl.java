@@ -40,7 +40,37 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
         //guardar pago
         return iAccountClientRepository.findById(e.getAccountClient().getId()).map(data -> {
             if (e.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
-                data.setAmount(data.getAmount().add(e.getAmount()));
+            	//if id exter = interno  -> e entrante data accountclient del pagado
+            	System.out.println("despoito");
+            	System.out.println("data="+data.getProduct().getProductsubtype());
+            	System.out.println("const="+Constants.PRODUCTO_CREDITO);
+            	System.out.println("Logica= "+data.getProduct().getProductsubtype().equals(Constants.PRODUCTO_CREDITO));
+				if(data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
+					System.out.println("entre if credito");
+					if(e.getClientPayment().getId() != e.getAccountClient().getId()) {
+						System.out.println("un tercerro esta pagando");
+						//verificamos que tenga saldo el cliente pagante e , data cliente pagado
+						iAccountClientRepository.findByClientId(e.getClientPayment().getId())
+						.map( acc -> {
+							if(acc.getAmount().compareTo(e.getAmount()) >= 0) {;
+								//disminuimos al cliente pagante
+								System.out.println("disminuimos al tercero");
+								acc.setAmount( acc.getAmount().subtract(e.getAmount()));
+								iAccountClientRepository.save(acc).subscribe();
+								//reiniciamos el credito deudor
+								System.out.println("aumentamos al pagado al pagado");
+								data.setAmount(data.getAmount().add(e.getAmount()));
+							}else {
+								throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
+							}
+							return acc;
+						});
+					}
+					//caso donde uno mismo paga su credito
+				}
+				else {
+					data.setAmount(data.getAmount().add(e.getAmount()));
+				}
             } else if (e.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)) {
                 if (data.getAmount().compareTo(e.getAmount()) == -1) {
                     throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");

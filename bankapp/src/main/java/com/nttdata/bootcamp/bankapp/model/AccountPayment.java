@@ -21,7 +21,8 @@ public class AccountPayment {
 	private AccountClient accountClient;
 	private BigDecimal amount;
 	private String movementtype;
-        @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
 	private LocalDateTime date;
+    private Client clientPayment;
         
 }

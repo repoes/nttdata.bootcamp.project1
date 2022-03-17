@@ -21,6 +21,7 @@ public class AccountClient {
 	private Product product;
 	private BigDecimal amount;
 	private BigDecimal baseamount;
+	private String dateExp;
 //	private String cardNumber;
 //	private boolean toCardPrincipal;
 }

@@ -3,6 +3,7 @@ package com.nttdata.bootcamp.bankapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +16,10 @@ import com.nttdata.bootcamp.bankapp.model.CardAccount;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import com.nttdata.bootcamp.bankapp.service.ICardAccountService;
+import com.nttdata.bootcamp.bankapp.service.impl.CardAccountServiceImpl;
 
 @RestController
-@RequestMapping("/target")
+@RequestMapping("/card")
 public class TargetAccountController {
 	
 	@Autowired
@@ -37,5 +39,11 @@ public class TargetAccountController {
 		return targetService.list().map(targetAccount -> {
 			return targetAccount;
 		});
+	}
+	
+	@GetMapping("/principal/{cardNumber}")
+    @ResponseStatus(HttpStatus.OK)
+	public Mono<String> getAccountPrincipal(@PathVariable("cardNumber") String cardNumber) {
+		return targetService.getAmountPrincipal(cardNumber);
 	}
 }
