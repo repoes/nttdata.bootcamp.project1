@@ -11,8 +11,3 @@ spring:
           username: repoes
           password: Proyecto1234
           default-label: "main"
-  security:
-    user:
-      name: root
-      password: s3cr3t 
-
