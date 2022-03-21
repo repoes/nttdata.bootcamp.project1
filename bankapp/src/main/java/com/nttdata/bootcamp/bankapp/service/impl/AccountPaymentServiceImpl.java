@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nttdata.bootcamp.bankapp.dto.AccountPaymentDTO;
+import com.nttdata.bootcamp.bankapp.model.AccountClient;
 import com.nttdata.bootcamp.bankapp.model.AccountPayment;
 import com.nttdata.bootcamp.bankapp.repository.IAccountClientRepository;
 import com.nttdata.bootcamp.bankapp.repository.IAccountPaymentRepository;
 import com.nttdata.bootcamp.bankapp.repository.ICardAccountRepository;
+import com.nttdata.bootcamp.bankapp.repository.IClientRepository;
 import com.nttdata.bootcamp.bankapp.service.IAccountPaymentService;
 import com.nttdata.bootcamp.bankapp.util.Constants;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,48 +33,44 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
 
     @Autowired
     ICardAccountRepository iCardAccountRepository;
+    
+    @Autowired
+    IClientRepository iClientRepository;
 
 //	@Autowired
 //	private AppConfig appConfig; 
     @Override
-    public Mono<AccountPayment> save(AccountPayment e) {
+    public Mono<?> save(AccountPayment e) {
         //buscar cuenta por accountclient.id
         //si no encuentra error
         //actualizar monto accountcliente
         //guardar pago
-        return iAccountClientRepository.findById(e.getAccountClient().getId()).map(data -> {
+        return iAccountClientRepository.findById(e.getAccountClient().getId())
+        .map(data -> {
             if (e.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
-            	//if id exter = interno  -> e entrante data accountclient del pagado
-            	System.out.println("despoito");
-            	System.out.println("data="+data.getProduct().getProductsubtype());
-            	System.out.println("const="+Constants.PRODUCTO_CREDITO);
-            	System.out.println("Logica= "+data.getProduct().getProductsubtype().equals(Constants.PRODUCTO_CREDITO));
-				if(data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
-					System.out.println("entre if credito");
-					if(e.getClientPayment().getId() != e.getAccountClient().getId()) {
-						System.out.println("un tercerro esta pagando");
-						//verificamos que tenga saldo el cliente pagante e , data cliente pagado
-						iAccountClientRepository.findByClientId(e.getClientPayment().getId())
-						.map( acc -> {
-							if(acc.getAmount().compareTo(e.getAmount()) >= 0) {;
-								//disminuimos al cliente pagante
-								System.out.println("disminuimos al tercero");
-								acc.setAmount( acc.getAmount().subtract(e.getAmount()));
-								iAccountClientRepository.save(acc).subscribe();
-								//reiniciamos el credito deudor
-								System.out.println("aumentamos al pagado al pagado");
-								data.setAmount(data.getAmount().add(e.getAmount()));
-							}else {
-								throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
-							}
-							return acc;
-						});
-					}
-					//caso donde uno mismo paga su credito
-				}
-				else {
-					data.setAmount(data.getAmount().add(e.getAmount()));
-				}
+                //if id exter = interno  -> e entrante data accountclient del pagado
+                if (data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
+                    if (e.getClientPayment().getId() != data.getClient().getId()) {
+                        System.out.println("un tercerro esta pagando");
+                        //verificamos que el cliente exista
+                        iClientRepository.findById(e.getClientPayment().getId())
+                                .flatMap(client ->{
+                                    //existe el cliente
+                                    BigDecimal deuda = data.getBaseamount().subtract(data.getAmount());
+                                    System.out.println("entre al map");
+                                    System.out.println(deuda.compareTo(e.getAmount()));
+                                    if( deuda.compareTo(e.getAmount()) >= 0 ){
+                                        data.setAmount(data.getAmount().add(e.getAmount()));
+                                    }else{
+                                        throw new RuntimeException("Excediste el monto base");
+                                    }
+                                    return Mono.just(client);
+                                });
+                    }
+                    //caso donde uno mismo paga su credito
+                } else {
+                    data.setAmount(data.getAmount().add(e.getAmount()));
+                }
             } else if (e.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)) {
                 if (data.getAmount().compareTo(e.getAmount()) == -1) {
                     throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
@@ -85,10 +85,30 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
             iAccountClientRepository.save(data).subscribe();
             return data;
         })
-                .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
-                .flatMap(data2 -> iAccountPaymentRepository.save(e));
+        .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
+        .flatMap(data2 -> iAccountPaymentRepository.save(e));
     }
-
+    
+    @Override
+    public Mono<?> test(AccountPayment e){
+        return iAccountClientRepository.findById(e.getClientPayment().getId())
+                                .map(acc -> {
+                                    System.out.println("Encontre al cliente pagador");
+                                    System.out.println("compara"+ acc.getAmount().compareTo(e.getAmount()));
+                                    if (acc.getAmount().compareTo(e.getAmount()) >= 0) {
+                                        //disminuimos al cliente pagante
+                                        System.out.println("disminuimos al tercero");
+                                        acc.setAmount(acc.getAmount().subtract(e.getAmount()));
+                                        iAccountClientRepository.save(acc).subscribe();
+                                        //reiniciamos el credito deudor
+                                        System.out.println("aumentamos al pagado al pagado");
+                                        acc.setAmount(acc.getAmount().add(e.getAmount()));
+                                    } else {
+                                        throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
+                                    }
+                                    return acc;
+                                });
+    }
     @Override
     public Mono<?> savePaymentByCardNumber(AccountPaymentDTO accountPaymentDTO) {
         return iCardAccountRepository.findByCardNumberAndAccountPrincipal(accountPaymentDTO.getCardNumber(), true)

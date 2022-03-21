@@ -9,8 +9,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface IAccountPaymentService {
-
-    public Mono<AccountPayment> save(AccountPayment e);
+    public Mono<?> test(AccountPayment e);
+    public Mono<?> save(AccountPayment e);
 
     public Mono<?> savePaymentByCardNumber(AccountPaymentDTO accountPaymentDTO);
 

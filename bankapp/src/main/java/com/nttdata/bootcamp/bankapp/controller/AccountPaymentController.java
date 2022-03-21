@@ -43,9 +43,21 @@ public class AccountPaymentController {
     @ResponseStatus(HttpStatus.OK)
     public Mono<?> save(@RequestBody AccountPayment account) throws RuntimeException {
         return accountPaymentService.save(account)
-                .map(result -> "Cuenta actualizada!")
-                .onErrorResume(ex -> Mono.just(ex.getMessage()));
+                .map(result -> "Cuenta actualizada!"+result.toString())
+                .onErrorResume(ex -> Mono.just(ex.getMessage()))
+                .defaultIfEmpty("no hay dato");
+                
     }
+    @PostMapping("/test")
+    @ResponseStatus(HttpStatus.OK)
+    public Mono<?> teest(@RequestBody AccountPayment account) throws RuntimeException {
+        return accountPaymentService.test(account)
+                .map(result -> "Cuenta actualizada!"+result.toString())
+                .onErrorResume(ex -> Mono.just(ex.getMessage()))
+                .defaultIfEmpty("no hay dato");
+                
+    }
+    
     @PostMapping("/saveWithCard")
     @ResponseStatus(HttpStatus.OK)
     public Mono<?> savePaymentByCardNumber(@RequestBody AccountPaymentDTO accountPaymentDTO) {
