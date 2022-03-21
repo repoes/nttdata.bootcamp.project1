@@ -25,7 +25,7 @@ import reactor.core.publisher.Mono;
 @Service
 public class AccountClientServiceImpl implements IAccountClientService {
 
-    private static final Logger log = LoggerFactory.getLogger(AccountClientServiceImpl.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AccountClientServiceImpl.class);
 
     @Autowired
     IAccountClientRepository iAccountClientRepository;
@@ -55,31 +55,31 @@ public class AccountClientServiceImpl implements IAccountClientService {
                     }
                     return data;
                 })
-                .map( data -> {
-        			//tienes un flujo del clienta a con sus cuentas
-        			//te llega un cliente con una nueva cuenta
-        			//filtrar sus productos de credito y verificar si la fecha ya vencio
-        			// si vencio error
-        			// sino dejar fluir
-                	System.out.println("const "+Constants.PRODUCTO_CREDITO);
-                	System.out.println("data "+data.getProduct().getProducttype());
-                	System.out.println("logica 1 :"+data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO ));
-                	System.out.println("logica 2:"+data.getProduct().getProducttype() == Constants.PRODUCTO_CREDITO);
-        			if( data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO) ) {
-        				System.out.println("entre al producto de creidto");
-        				//String formate = "2015-02-01";
-        				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        		        LocalDate dateActual = LocalDate.now();
-        		        LocalDate dateExp = LocalDate.parse(data.getDateExp(), formatter);
-        		        System.out.println("fecha actual"+dateActual);
-        		        System.out.println("fecha expiracion"+dateExp);
-        		        System.out.println("comparacion fechas"+dateActual.isAfter(dateExp));
-        			    if(dateActual.isAfter(dateExp)) {
-        			    	throw new RuntimeException("Tiene una cuenta de credito vencida");
-        			    }
-        			}
-        			return data;
-        		})
+                .map(data -> {
+                    //tienes un flujo del clienta a con sus cuentas
+                    //te llega un cliente con una nueva cuenta
+                    //filtrar sus productos de credito y verificar si la fecha ya vencio
+                    // si vencio error
+                    // sino dejar fluir
+                    LOG.debug("const " + Constants.PRODUCTO_CREDITO);
+                    LOG.debug("data " + data.getProduct().getProducttype());
+                    LOG.debug("logica 1 :" + data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO));
+                    LOG.debug("logica 2:" + String.valueOf(data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)));
+                    if (data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
+                        LOG.debug("entre al producto de creidto");
+                        //String formate = "2015-02-01";
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                        LocalDate dateActual = LocalDate.now();
+                        LocalDate dateExp = LocalDate.parse(data.getDateExp(), formatter);
+                        LOG.debug("fecha actual" + dateActual);
+                        LOG.debug("fecha expiracion" + dateExp);
+                        LOG.debug("comparacion fechas" + dateActual.isAfter(dateExp));
+                        if (dateActual.isAfter(dateExp)) {
+                            throw new RuntimeException("Tiene una cuenta de credito vencida");
+                        }
+                    }
+                    return data;
+                })
                 .filter(data -> {
                     if (data.getClient().getClienttype().getId() == Constants.CLIENTE_TIPO_PERSONAL_ID) {
                         if (data.getProduct().getId() == e.getProduct().getId()
@@ -107,12 +107,12 @@ public class AccountClientServiceImpl implements IAccountClientService {
     private Mono<AccountClient> postSave(AccountClient e) {
         return iClientRepository.findById(e.getClient().getId())
                 .flatMap(data -> {
-                    log.info(data.toString());
+                    LOG.info(data.toString());
                     e.setClient(data);
                     return iProductRepository.findById(e.getProduct().getId());
                 })
                 .flatMap(data2 -> {
-                    log.info(data2.toString());
+                    LOG.info(data2.toString());
                     e.setProduct(data2);
                     return iAccountClientRepository.save(e);
                 });
