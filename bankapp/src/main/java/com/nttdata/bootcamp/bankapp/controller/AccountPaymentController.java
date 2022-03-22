@@ -40,8 +40,9 @@ public class AccountPaymentController {
 //    private AppConfig appConfig;
 
     @PostMapping("/save")
-    @ResponseStatus(HttpStatus.OK)
-    public Mono<?> save(@RequestBody AccountPayment account) throws RuntimeException {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<String> save(@RequestBody AccountPayment account) throws RuntimeException {
+        System.out.println(account);
         return accountPaymentService.save(account)
                 .map(result -> "Cuenta actualizada!"+result.toString())
                 .onErrorResume(ex -> Mono.just(ex.getMessage()))

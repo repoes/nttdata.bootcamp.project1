@@ -20,30 +20,30 @@ import com.nttdata.bootcamp.bankapp.service.impl.CardAccountServiceImpl;
 
 @RestController
 @RequestMapping("/card")
-public class TargetAccountController {
-	
-	@Autowired
-	private ICardAccountService targetService;
-	
-	@PostMapping("/save")
+public class CardAccountController {
+
+    @Autowired
+    private ICardAccountService targetService;
+
+    @PostMapping("/save")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<?> save (@RequestBody CardAccount targetAccount) throws RuntimeException{
-		return targetService.save(targetAccount)
-				.map(result -> "Cuenta Asociada!")
-				.onErrorResume(ex-> Mono.just(ex.getMessage()));
+    public Mono<?> save(@RequestBody CardAccount targetAccount) throws RuntimeException {
+        return targetService.save(targetAccount)
+                .map(result -> "Cuenta Asociada!")
+                .onErrorResume(ex -> Mono.just(ex.getMessage()));
     }
-	
-	@GetMapping("/list")
+
+    @GetMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-	public Flux<CardAccount> list() {
-		return targetService.list().map(targetAccount -> {
-			return targetAccount;
-		});
-	}
-	
-	@GetMapping("/principal/{cardNumber}")
+    public Flux<CardAccount> list() {
+        return targetService.list().map(targetAccount -> {
+            return targetAccount;
+        });
+    }
+
+    @GetMapping("/principal/{cardNumber}")
     @ResponseStatus(HttpStatus.OK)
-	public Mono<String> getAccountPrincipal(@PathVariable("cardNumber") String cardNumber) {
-		return targetService.getAmountPrincipal(cardNumber);
-	}
+    public Mono<String> getAccountPrincipal(@PathVariable("cardNumber") String cardNumber) {
+        return targetService.getAmountPrincipal(cardNumber);
+    }
 }

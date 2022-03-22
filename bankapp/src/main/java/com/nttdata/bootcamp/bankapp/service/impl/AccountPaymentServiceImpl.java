@@ -33,91 +33,93 @@ public class AccountPaymentServiceImpl implements IAccountPaymentService {
 
     @Autowired
     ICardAccountRepository iCardAccountRepository;
-    
+
     @Autowired
     IClientRepository iClientRepository;
 
 //	@Autowired
 //	private AppConfig appConfig; 
     @Override
-        public Mono<?> save(AccountPayment e) {
+    public Mono<AccountPayment> save(AccountPayment e) {
         //buscar cuenta por accountclient.id
         //si no encuentra error
         //actualizar monto accountcliente
         //guardar pago
+        System.out.println(e);
         return iAccountClientRepository.findById(e.getAccountClient().getId())
-        .map(data -> {
-            if (e.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
-                //if id exter = interno  -> e entrante data accountclient del pagado
-                if (data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
-                    if (e.getClientPayment().getId() != data.getClient().getId()) {
-                        LOG.info("un tercerro esta pagando");
-                        //verificamos que el cliente exista
+                .map(data -> {
+                    if (e.getMovementtype().equals(Constants.MOVEMENTYPE_DEPOSITO)) {
+                        //if id exter = interno  -> e entrante data accountclient del pagado
+                        if (data.getProduct().getProducttype().equals(Constants.PRODUCTO_CREDITO)) {
+                            if (e.getClientPayment().getId() != data.getClient().getId()) {
+                                LOG.info("un tercerro esta pagando");
+                                //verificamos que el cliente exista
 //                        return data;
-                        return iAccountClientRepository.findByClientId(e.getClientPayment().getId())
-                                .switchIfEmpty(Mono.error(new Exception("Quien esta pagando no es cliente del banco")))
-                                .subscribe(client ->{
+                                return iAccountClientRepository.findByClientId(e.getClientPayment().getId())
+                                        .switchIfEmpty(Mono.error(new Exception("Quien esta pagando no es cliente del banco")))
+                                        .subscribe(client -> {
 //                                    LOG.info("waaa");
-                                    //existe el cliente
-                                    BigDecimal deuda = data.getBaseamount().subtract(data.getAmount());
-                                    LOG.info("entre al map");
-                                    LOG.info(String.valueOf(deuda.compareTo(e.getAmount())));
-                                    if( deuda.compareTo(e.getAmount()) >= 0 ){
-                                        data.setAmount(data.getAmount().add(e.getAmount()));
-                                    }else{
-                                        throw new RuntimeException("Excediste el monto base");
-                                    }
-                                    e.setAccountClient(data);
-                                    iAccountClientRepository.save(data).subscribe();
+                                            //existe el cliente
+                                            BigDecimal deuda = data.getBaseamount().subtract(data.getAmount());
+                                            LOG.info("entre al map");
+                                            LOG.info(String.valueOf(deuda.compareTo(e.getAmount())));
+                                            if (deuda.compareTo(e.getAmount()) >= 0) {
+                                                data.setAmount(data.getAmount().add(e.getAmount()));
+                                            } else {
+                                                throw new RuntimeException("Excediste el monto base");
+                                            }
+                                            e.setAccountClient(data);
+                                            iAccountClientRepository.save(data).subscribe();
 //                                    return data;
-                                });
+                                        });
+                            }
+                            //caso donde uno mismo paga su credito
+                        } else {
+                            data.setAmount(data.getAmount().add(e.getAmount()));
+                            e.setAccountClient(data);
+                            iAccountClientRepository.save(data).subscribe();
+                        }
+                    } else if (e.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)) {
+                        if (data.getAmount().compareTo(e.getAmount()) == -1) {
+                            throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
+                        }
+                        data.setAmount(data.getAmount().subtract(e.getAmount()));
+                        e.setAccountClient(data);
+                        iAccountClientRepository.save(data).subscribe();
+                    } else {
+                        throw new RuntimeException("Solo se permiten los valores DEPOSITO/RETIRO");
                     }
-                    //caso donde uno mismo paga su credito
-                } else {
-                    data.setAmount(data.getAmount().add(e.getAmount()));
-                    e.setAccountClient(data);
-                    iAccountClientRepository.save(data).subscribe();
-                }
-            } else if (e.getMovementtype().equals(Constants.MOVEMENTYPE_RETIRO)) {
-                if (data.getAmount().compareTo(e.getAmount()) == -1) {
-                    throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
-                }
-                data.setAmount(data.getAmount().subtract(e.getAmount()));
-                e.setAccountClient(data);
-                iAccountClientRepository.save(data).subscribe();
-            } else {
-                throw new RuntimeException("Solo se permiten los valores DEPOSITO/RETIRO");
-            }
-            
+
 //            e.setId(sequenceGeneratorService.generateSequence(AccountPayment.SEQUENCE_NAME));
 //            iAccountPaymentRepository.save(e).subscribe();
 //            iAccountClientRepository.save(data).subscribe();
-            return data;
-        })
-        .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
-        .flatMap(data2 -> iAccountPaymentRepository.save(e));
+                    return data;
+                })
+                .switchIfEmpty(Mono.error(new Exception("No se encuentra la cuenta")))
+                .flatMap(data2 -> iAccountPaymentRepository.save(e));
     }
-    
+
     @Override
-    public Mono<?> test(AccountPayment e){
+    public Mono<?> test(AccountPayment e) {
         return iAccountClientRepository.findById(e.getClientPayment().getId())
-                                .map(acc -> {
-                                    System.out.println("Encontre al cliente pagador");
-                                    System.out.println("compara"+ acc.getAmount().compareTo(e.getAmount()));
-                                    if (acc.getAmount().compareTo(e.getAmount()) >= 0) {
-                                        //disminuimos al cliente pagante
-                                        System.out.println("disminuimos al tercero");
-                                        acc.setAmount(acc.getAmount().subtract(e.getAmount()));
-                                        iAccountClientRepository.save(acc).subscribe();
-                                        //reiniciamos el credito deudor
-                                        System.out.println("aumentamos al pagado al pagado");
-                                        acc.setAmount(acc.getAmount().add(e.getAmount()));
-                                    } else {
-                                        throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
-                                    }
-                                    return acc;
-                                });
+                .map(acc -> {
+                    System.out.println("Encontre al cliente pagador");
+                    System.out.println("compara" + acc.getAmount().compareTo(e.getAmount()));
+                    if (acc.getAmount().compareTo(e.getAmount()) >= 0) {
+                        //disminuimos al cliente pagante
+                        System.out.println("disminuimos al tercero");
+                        acc.setAmount(acc.getAmount().subtract(e.getAmount()));
+                        iAccountClientRepository.save(acc).subscribe();
+                        //reiniciamos el credito deudor
+                        System.out.println("aumentamos al pagado al pagado");
+                        acc.setAmount(acc.getAmount().add(e.getAmount()));
+                    } else {
+                        throw new RuntimeException("No cuenta con saldo suficiente en su cuenta");
+                    }
+                    return acc;
+                });
     }
+
     @Override
     public Mono<?> savePaymentByCardNumber(AccountPaymentDTO accountPaymentDTO) {
         return iCardAccountRepository.findByCardNumberAndAccountPrincipal(accountPaymentDTO.getCardNumber(), true)

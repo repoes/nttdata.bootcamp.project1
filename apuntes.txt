@@ -3,10 +3,39 @@ ejecutar checkstyle:
 1. descomentar plugin en pom.xml
 2. ejecutar comando mvn checkstyle:checkstyle
 
-docker:
-=======
+####################################################
+###DOCKER COMPOSE###################################
+####################################################
 docker-compose pull
 docker-compose build gateway-service config-server eureka-service project1-service
 docker-compose up -d
 
+####################################################
+###KAFKA############################################
+####################################################
+
+levantar zookeper
+./bin/windows/zookeeper-server-start.bat ./config/zookeeper.properties
+
+levantar kafka
+./bin/windows/kafka-server-start.bat ./config/server.properties
+
+crear topico quickstart-events
+./bin/windows/kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
+
+producer topico quickstart-events
+./bin/windows/kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
+
+consumer topico quickstart-events
+./bin/windows/kafka-console-consumer.bat --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+
+####################################################
+###AZURE############################################
+####################################################
+
+https://bankapp-eureka-server.azurewebsites.net/
+
+https://bank-app-project1.azurewebsites.net/bankapp/
 https://bank-app-project1.scm.azurewebsites.net/api/logstream
+
+
