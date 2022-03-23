@@ -8,6 +8,7 @@ import com.nttdata.bootcamp.bankapp.model.Clienttype;
 import com.nttdata.bootcamp.bankapp.repository.IClientRepository;
 import com.nttdata.bootcamp.bankapp.repository.IClienttypeRepository;
 import com.nttdata.bootcamp.bankapp.service.IClientService;
+import org.springframework.cache.annotation.Cacheable;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

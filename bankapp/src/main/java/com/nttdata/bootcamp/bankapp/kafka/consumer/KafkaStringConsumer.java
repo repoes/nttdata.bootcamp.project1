@@ -13,7 +13,7 @@ public class KafkaStringConsumer {
 
     @KafkaListener(topics = "quickstart-events" , groupId = "group_id")
     public void consume(String message) {
-        logger.info("Consuming Message {}", message);
+        //logger.info("Consuming Message {}", message);
     }
 
 }

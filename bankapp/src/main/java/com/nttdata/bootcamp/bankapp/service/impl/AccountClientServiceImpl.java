@@ -2,20 +2,16 @@ package com.nttdata.bootcamp.bankapp.service.impl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nttdata.bootcamp.bankapp.controller.AccountClientController;
 import com.nttdata.bootcamp.bankapp.model.AccountClient;
-import com.nttdata.bootcamp.bankapp.model.Client;
 import com.nttdata.bootcamp.bankapp.repository.IAccountClientRepository;
 import com.nttdata.bootcamp.bankapp.repository.IClientRepository;
-import com.nttdata.bootcamp.bankapp.repository.IProductRepository;
+import com.nttdata.bootcamp.bankapp.repository.ProductRedisRepository;
 import com.nttdata.bootcamp.bankapp.service.IAccountClientService;
 import com.nttdata.bootcamp.bankapp.util.Constants;
 
@@ -33,9 +29,10 @@ public class AccountClientServiceImpl implements IAccountClientService {
     @Autowired
     IClientRepository iClientRepository;
 
+    
     @Autowired
-    IProductRepository iProductRepository;
-
+    ProductRedisRepository productRedisRepository;
+    
     @Override
     public Mono<AccountClient> save(AccountClient e) throws RuntimeException {
 
@@ -103,13 +100,13 @@ public class AccountClientServiceImpl implements IAccountClientService {
         }).switchIfEmpty(postSave(e));
         return Mono.from(flux);
     }
-
+    //se edito
     private Mono<AccountClient> postSave(AccountClient e) {
         return iClientRepository.findById(e.getClient().getId())
                 .flatMap(data -> {
                     LOG.info(data.toString());
                     e.setClient(data);
-                    return iProductRepository.findById(e.getProduct().getId());
+                    return Mono.just(productRedisRepository.findById(String.valueOf(e.getProduct().getId())));
                 })
                 .flatMap(data2 -> {
                     LOG.info(data2.toString());

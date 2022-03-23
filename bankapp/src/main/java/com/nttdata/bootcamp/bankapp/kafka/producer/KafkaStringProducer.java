@@ -18,7 +18,7 @@ public class KafkaStringProducer {
     }
 
     public void sendMessage(String message) {
-        LOGGER.info("Producing message {}", message);
+        //LOGGER.info("Producing message {}", message);
         this.kafkaTemplate.send("quickstart-events", message);
     }
 
