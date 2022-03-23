@@ -50,7 +50,7 @@ class BankappApplicationTests {
     public void saveAccountPayment() {
         
         AccountPayment mono = new AccountPayment(null, 
-                new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "RETIRO",dateTime,new Client());
+                new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "RETIRO",dateTime,new Client());
         when(iAccountPaymentService.save(mono)).thenReturn(Mono.just(mono));
         webTestClient.post().uri("/accountPayment/save")
                 
@@ -66,9 +66,9 @@ class BankappApplicationTests {
     public void getAllAccountPayment() {
         Flux<AccountPayment> flux = Flux.just(
                 new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO",dateTime,new Client()), 
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO",dateTime,new Client()), 
                 new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()));
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()));
         when(iAccountPaymentService.findAll()).thenReturn(flux);
         Flux<AccountPayment> responseBody = webTestClient.get().uri("/accountPayment/list")
                 .exchange()
@@ -78,9 +78,9 @@ class BankappApplicationTests {
         StepVerifier.create(responseBody)
                 .expectSubscription()
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
                 .verifyComplete();
     }
     @Test
@@ -99,9 +99,9 @@ class BankappApplicationTests {
         StepVerifier.create(responseBody)
                 .expectSubscription()
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
                 .expectNext(new AccountPayment(null, 
-                    new AccountClient(1,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
+                    new AccountClient(1,null,null,null,null,null,null), BigDecimal.TEN, "DEPOSITO", dateTime,new Client()))
                 .verifyComplete();
     }
     @Test

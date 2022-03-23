@@ -99,6 +99,10 @@ public class AccountClientServiceImpl implements IAccountClientService {
                     throw new RuntimeException("El cliente de tipo EMPRESARIAL no puede tener mas de una cuenta de ahorro o de plazo fijo");
                 }
             }
+            if (data.getProduct().getProductsubtype().equals("MONEDERO") &&
+                   (e.getClient().getNumDoc() == null || e.getClient().getCellPhone() == null || e.getClient().getEmail() == null)) {
+                throw new RuntimeException("Para el tipo de producto MONEDERO el cliente debe tener registrado el npumero de documento, celular y corre");
+            }
             return false;
         }).switchIfEmpty(postSave(e));
         return Mono.from(flux);
