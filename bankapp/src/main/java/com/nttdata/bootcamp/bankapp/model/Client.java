@@ -13,4 +13,7 @@ public class Client implements Serializable {
 	private int id;
 	private Clienttype clienttype;
 	private String name;
+        private String numDoc;
+        private String cellPhone;
+        private String email;
 }

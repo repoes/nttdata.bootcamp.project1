@@ -1,4 +1,4 @@
-package com.nttdata.bootcamp.bankapp.kafka.controller;
+package com.nttdata.bootcamp.bankapp.controller;
 
 import com.nttdata.bootcamp.bankapp.kafka.producer.KafkaStringProducer;
 import org.springframework.beans.factory.annotation.Autowired;

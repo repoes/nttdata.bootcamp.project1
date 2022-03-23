@@ -40,7 +40,7 @@ public class ClientController {
     }
 
     @GetMapping("/list")
-    @Cacheable(value = "users")
+//    @Cacheable(value = "users")
     public Flux<Client> list() {
         log.info("Liste los clientes y me almacene en memoria");
         Flux<Client> list = clientService.findAll().map(clienttype -> {
