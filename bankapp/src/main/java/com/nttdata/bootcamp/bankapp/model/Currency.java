@@ -16,6 +16,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Currency {
     @Id
-    String id;
-    String name;
+    private String id;
+    private String name;
 }

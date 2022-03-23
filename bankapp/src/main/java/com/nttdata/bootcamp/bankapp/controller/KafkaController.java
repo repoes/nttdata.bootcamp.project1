@@ -22,4 +22,5 @@ public class KafkaController {
     public void sendMessageToKafkaTopic(@RequestParam("message") String message) {
         this.kafkaStringProducer.sendMessage(message);
     }
+    
 }

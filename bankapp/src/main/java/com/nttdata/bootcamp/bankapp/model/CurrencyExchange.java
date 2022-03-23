@@ -5,6 +5,7 @@
 package com.nttdata.bootcamp.bankapp.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,8 +16,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @Document
 public class CurrencyExchange {
-    String currencyFrom;
-    String currencyTo;
-    BigDecimal sellValue;
-    BigDecimal purchaseValue;
+    private String currencyFrom;
+    private String currencyTo;
+    private BigDecimal sellValue;
+    private BigDecimal purchaseValue;
+    private LocalDate day;
 }
