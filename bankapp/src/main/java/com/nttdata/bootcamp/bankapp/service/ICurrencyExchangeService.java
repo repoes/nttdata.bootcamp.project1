@@ -18,5 +18,4 @@ public interface ICurrencyExchangeService {
     Mono<Void> delete(String id);
 
     public void sendExchangeDay();
-    public void consumeExchangeDay(String message);
 }

@@ -16,4 +16,6 @@ public interface ITransactionService {
     Mono<Transaction> update(Transaction e);
 
     Mono<Void> delete(String id);
+    
+    public Mono<String> confirmTransaction(String valueConfirm);
 }

@@ -1,0 +1,104 @@
+{
+	"info": {
+		"_postman_id": "66ba8601-a3d3-471b-9642-41b3261a158e",
+		"name": "bootcoin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8081/bankapp/currency-exchange/day-exchange",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/bankapp/currency-exchange/day-exchange",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"bankapp",
+						"currency-exchange",
+						"day-exchange"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8080/bootcoinapp/init-transaction",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accountFromId\":1,\r\n    \"accountToId\":3,\r\n    \"amountFrom\":100,\r\n    \"amountTo\":100\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/bootcoinapp/init-transaction",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"bootcoinapp",
+						"init-transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:8081/bankapp/transaction/confirm-transaction?respuesta=SI",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/bankapp/transaction/confirm-transaction?respuesta=SI",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"bankapp",
+						"transaction",
+						"confirm-transaction"
+					],
+					"query": [
+						{
+							"key": "respuesta",
+							"value": "SI"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

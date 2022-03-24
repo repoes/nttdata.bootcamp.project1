@@ -2,6 +2,7 @@ package com.nttdata.bootcamp.bankapp;
 
 import com.nttdata.bootcamp.bankapp.model.Product;
 import com.nttdata.bootcamp.bankapp.repository.ProductRedisRepository;
+import com.nttdata.bootcamp.bankapp.service.ICurrencyExchangeService;
 import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -15,6 +16,9 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @EnableCaching
 public class BankappApplication implements CommandLineRunner {
 
+    @Autowired
+    ICurrencyExchangeService iCurrencyExchangeService;
+    
     private final ProductRedisRepository productRedisRepository;
 
     @Autowired
@@ -24,6 +28,7 @@ public class BankappApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication.run(BankappApplication.class, args);
+        
     }
 
     @Override
@@ -41,6 +46,7 @@ public class BankappApplication implements CommandLineRunner {
         for(int i = 0 ; i < 8 ; i++){
             productRedisRepository.save(array[i]);
         }
+//        this.iCurrencyExchangeService.sendExchangeDay();
     }
 
 }

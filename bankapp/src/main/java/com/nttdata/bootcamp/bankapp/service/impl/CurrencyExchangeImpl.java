@@ -55,16 +55,20 @@ public class CurrencyExchangeImpl implements ICurrencyExchangeService {
     }
     @Override
     public void sendExchangeDay() {
-        this.kafkaTemplate.send("quickstart-events", "TIPO DE CAMBIO DEL DIA: PEN -> BOOTCOIN, VALOR VENTA: 100, VALOR COMPRA: 99");
-        LOGGER.info("Producing sendExchangeDay {}", LocalDate.now());
+        LOGGER.info("Producing sendExchangeDay {}", LocalDate.now().toString());
+        iCurrencyExchangeRepository.findByDay(LocalDate.now().toString()).subscribe(data -> {
+            this.kafkaTemplate.send("quickstart-events", "ID: "+ data.getId() + 
+                    " TIPO DE CAMBIO DEL DIA: "+ data.getCurrencyFrom() +" -> "+ data.getCurrencyTo() +", VALOR VENTA: "+ data.getSellValue() +", VALOR COMPRA: " + data.getPurchaseValue());
+        });
+//        this.kafkaTemplate.send("quickstart-events", "TIPO DE CAMBIO DEL DIA: PEN -> BOOTCOIN, VALOR VENTA: 100, VALOR COMPRA: 99");
+        
 //        this.kafkaTemplate.send("quickstart-events", data.toString());
 //        iCurrencyExchangeRepository.findByDay(LocalDate.now()).subscribe(data -> {
 //            this.kafkaTemplate.send("quickstart-events", data.toString());
 //        });  
     }
-    @Override
-    @KafkaListener(topics = "quickstart-events" , groupId = "group_id")
-    public void consumeExchangeDay(String message) {
-        LOGGER.info("Consuming Message {}", message);
-    }
+//    @KafkaListener(topics = "quickstart-events" , groupId = "group_id")
+//    public void consumeExchangeDay(String message) {
+//        LOGGER.info("Consuming Message {}", message);
+//    }
 }

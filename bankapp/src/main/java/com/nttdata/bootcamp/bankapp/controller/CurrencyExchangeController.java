@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,10 @@ public class CurrencyExchangeController {
     public void sendMessageToKafkaTopic() {
         this.iCurrencyExchangeService.sendExchangeDay();
     }
-    
+    @PostMapping(value = "/save")
+    public void save(@RequestBody CurrencyExchange e) {
+        this.iCurrencyExchangeService.save(e);
+    }
 //    @GetMapping(value = "/day-exchange")
 //    public void getDayExchange() {
 //        this.iCurrencyExchangeService.consumeExchangeDay(message);

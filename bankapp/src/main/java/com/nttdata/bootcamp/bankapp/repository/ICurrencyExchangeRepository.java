@@ -11,5 +11,5 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public interface ICurrencyExchangeRepository extends ReactiveMongoRepository<CurrencyExchange, String>{
-    public Mono<CurrencyExchange> findByDay(LocalDate day);
+    public Mono<CurrencyExchange> findByDay(String day);
 }

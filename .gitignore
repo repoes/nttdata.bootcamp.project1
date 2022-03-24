@@ -8,3 +8,12 @@ project1-config-server/target/**
 gateway-serverproject/target/**
 gateway-serverproject/.settings/**
 project1/.factorypath
+bankapp/target/*
+bootcoinapp/target/*
+bootcoinapp/.mvn/*
+botcoinapp/.mvn/wrapper/maven-wrapper.jar
+botcoinapp/.mvn/wrapper/maven-wrapper.properties
+botcoinapp/.mvn/wrapper/maven-wrapper.jar
+botcoinapp/mvnw
+botcoinapp/mvnw.cmd
+botcoinapp/nbactions.xml
