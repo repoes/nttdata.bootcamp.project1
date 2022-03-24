@@ -23,6 +23,9 @@ levantar kafka
 crear topico quickstart-events
 ./bin/windows/kafka-topics.bat --create --topic quickstart-events --bootstrap-server localhost:9092
 
+crear topico transactions (guarda transacciones que solicita el usuario)
+./bin/windows/kafka-topics.bat --create --topic topicTransactions --bootstrap-server localhost:9092
+
 producer topico quickstart-events
 ./bin/windows/kafka-console-producer.bat --topic quickstart-events --bootstrap-server localhost:9092
 
